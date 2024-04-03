@@ -1,11 +1,13 @@
-import { Badge, Card, Grid } from "@mui/material";
+import { Badge } from "@mui/material";
 import DirectionsBoatFilledOutlinedIcon from "@mui/icons-material/DirectionsBoatFilledOutlined";
 import PushPinOutlinedIcon from "@mui/icons-material/PushPinOutlined";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-// import styled from "@emotion/styled";
-import { styled, useTheme } from "@mui/material/styles";
+import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
+import { styled } from "@mui/material/styles";
+import { useState } from "react";
+import { useEffect } from "react";
 
 const Orders = () => {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const cardsData = [
     {
       id: 1,
@@ -16,16 +18,18 @@ const Orders = () => {
       date: "12 Jul 2019",
       name: "RT",
       color: "success",
+      icon: <PushPinOutlinedIcon />,
     },
     {
       id: 2,
       code: "5325 - 00034",
       description: "SAFETY EQUIPEMENT - COMPULSORY SPARES",
       content: "Lorem Ipsum",
-      serviceName: "Consumable",
-      date: "04 Mar 2020",
+      serviceName: "Consume",
+      date: "12 Jul 2019",
       name: "TQ",
       color: "error",
+      icon: '',
     },
     {
       id: 3,
@@ -36,6 +40,7 @@ const Orders = () => {
       date: "26 Jul 2022",
       name: "EO",
       color: "warning",
+      icon: <PushPinOutlinedIcon />,
     },
     {
       id: 4,
@@ -46,6 +51,7 @@ const Orders = () => {
       date: "10 Mar 2019",
       name: "RT",
       color: "success",
+      icon: <ErrorOutlineOutlinedIcon />,
     },
     {
       id: 5,
@@ -56,6 +62,7 @@ const Orders = () => {
       date: "21 Nov 2019",
       name: "RT",
       color: "success",
+      icon: <PushPinOutlinedIcon />,
     },
     {
       id: 6,
@@ -66,48 +73,64 @@ const Orders = () => {
       date: "20 Mar 2020",
       name: "RT",
       color: "success",
+      icon: '',
     },
   ];
 
   const StyledBadge = styled(Badge)(({ theme }) => ({
     "& .MuiBadge-badge": {
-      // border: `2px solid ${theme.palette.background.paper}`,
       borderRadius: "20px",
       padding: "15px 15px",
       margin: "12px 0px 0px -5px",
       left: "0rem",
     },
   }));
+
+  const [selectedCard, setSelectedCard] = useState(null);
+
+  const handleCardClick = (cardId) => {
+    setSelectedCard(cardId === selectedCard ? null : cardId);
+  };
+  useEffect(() => {
+    if (!selectedCard && cardsData.length > 0) {
+      setSelectedCard(cardsData[0].id);
+    }
+  }, [selectedCard, cardsData]);
+
   return (
     <>
       {cardsData.map((card) => (
-        <Card key={card.id} className="bg-card comman-card">
-          <div className="cards">
-            <div>
-              <p className="text-003e36 p-0">{card.code}</p>
-              <p className="fs-12 fw-700">{card.description}</p>
-              <div className="bg-80e7ff badge">
-                <DirectionsBoatFilledOutlinedIcon className="fs-20"/>
-                <p>{card.content}</p>
-              </div>
-            </div>
-            <div>
-              <div className="d-flex mt-1">
-                <PushPinOutlinedIcon className="" />
-                <StyledBadge
-                  badgeContent={card.name}
-                  color={card.color}
-                ></StyledBadge>
-              </div>
-              <div className="mt-45">
-                <div className="txt-end fs-12 card-bg-txt">
-                  {card.serviceName}
-                </div>
-                <div className="txt-end fs-12 card-bg-txt">{card.date}</div>
-              </div>
+        <div
+          key={card.id}
+          className={`bg-card  cards comman-card ${
+            selectedCard === card.id ? "selected-card" : ""
+          }`}
+          onClick={() => handleCardClick(card.id)}
+        >
+          <div className="p-10">
+            <div className="text-003e36 card-code">{card.code}</div>
+            <b className="fs-12 fw-700 card-description">{card.description}</b>
+            <div className="bg-80e7ff badge">
+              <DirectionsBoatFilledOutlinedIcon className="fs-20" />
+              <div className="card-content">{card.content}</div>
             </div>
           </div>
-        </Card>
+          <div>
+            <div className="d-flex mt-1">
+              {card.icon}
+              <StyledBadge
+                badgeContent={card.name}
+                color={card.color}
+              ></StyledBadge>
+            </div>
+            <div className="mt-25">
+              <div className="txt-end fs-12 card-bg-txt">
+                {card.serviceName}
+              </div>
+              <div className="txt-end fs-12 card-bg-txt">{card.date}</div>
+            </div>
+          </div>
+        </div>
       ))}
     </>
   );
